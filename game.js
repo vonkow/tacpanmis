@@ -210,8 +210,9 @@
         .newEnt(new Backdrop(2))
             .base.display(480,0).end()
         .post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
-            resp = JSON.parse(resp)
-            playerId = resp.player.id
+            resp = JSON.parse(resp),
+            alert(resp.player.id),
+            playerId = resp.player.id,
             rw.start()
         })
     })
