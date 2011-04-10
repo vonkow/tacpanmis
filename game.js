@@ -90,6 +90,14 @@
         }
     }
 
+	function Backdrop(name) {
+		this.base = new rw.Ent('backdrop_'+name, 'bg', 480, 320)
+		this.update = function(pX) {
+			if (pX>-480) this.base.move(-2,0)
+			else this.base.move(958,0)
+		}
+	}
+
     function Panda() {
         this.base = new rw.Ent('panda', 'panda1', 150, 40)
 		var counter = 20,
@@ -105,7 +113,7 @@
 				this.base.changeSprite('panda'+ani)
 			)
 			if (mY<pY) move = -2
-			else if (mY>pY+40) move = 2
+			else if ((mY>pY+40)&&(pY+40<300)) move = 2
 			this.base.move(0, move, 0)
 				
 			//this.base.move(0, rw.key('ua') ? -2 : rw.key('da') ? 2 : 0)
@@ -124,8 +132,7 @@
         this.base = new rw.Ent('spoon_'+spoonCount++, 'spoon', 22, 100)
         var dying = false,
             countdown = 30,
-			speed = 4*Math.random()
-		if (speed<0.5) speed=0.5
+			speed = 2+Math.random()
         this.update = function(pX,pY) {
             this.base.move(-speed, 0)
             if (dying) {
@@ -144,14 +151,14 @@
 			dying=true 
 			this.hitMap = []
 		}
-        this.init = function() { this.base.display(500,yPos) }
+        this.init = function() { this.base.display(480,yPos) }
     }
 
 	function Spawner() {
 		this.base = new rw.Rule(1)
 		this.rule = function() {
 			if (Math.random()<0.01) rw.newEnt(
-				new Spoon(Math.floor(460*Math.random()))
+				new Spoon(Math.floor(220*Math.random()))
 			)
 		}
 	}
@@ -177,10 +184,11 @@
         panda1: [path+'rpm1.png', 150, 40, 0, 0],
         panda2: [path+'rpm2.png', 150, 40, 0, 0],
         spoon: [path+'spoon.png', 22, 100, 0, 0],
+		bg: [path+'bg.png',480,320,0,0]
     }, function() {
         rw.init('playarea', {
-            x:500,
-            y:500,
+            x:480,
+            y:320,
             FPS:60,
             sequence:['ajax','ents','cols','rule','kill','blit','rule']
         })
@@ -190,9 +198,11 @@
         .newEnt(new LeaderLine(1)).base.end()
         .newEnt(new LeaderLine(2)).base.end()
         .newEnt(new Panda())
-            .base.display(20,230,500).end()
-        .newEnt(new Spoon(0)).base.end()
-        .newEnt(new Spoon(250)).base.end()
+            .base.display(10,140,320).end()
+        .newEnt(new Backdrop(1))
+            .base.display(0,0).end()
+        .newEnt(new Backdrop(2))
+            .base.display(480,0).end()
         .start()
     })
 })()
