@@ -13,6 +13,8 @@
 /*
  * Tactical Panda Missle
  *
+ * License: Follow the flowchart @ http://cl.ly/5nAo and choose the one you like
+ *
  * Image attribution:
  *  Panda Missle:
  *   Photo by Michael Musson. 
