@@ -59,20 +59,25 @@
     }
 })();
 
+// {"player":{"created_at":,"id":,"name":,"score":,"time":,"updated_at":}}
 (function() {
     // Structure
     var canHit = ['spoonhead','spoonbody'],
         path = 'sprites/',
+        //postUrl = 'http://localhost:3000/',
         postUrl = 'http://tacpan.heroku.com/',
         score = 0,
+        playerId = false,
         leaders = [
             {name:'bob', score:800},
             {name:'bib', score:80},
-            {name:'bab', score:8}
+            {name:'you', score:8}
         ]
 
     function pollServer() {
-        //leaders[0].score++
+        rw.post(postUrl+'player/update/','{"id":,"score":'+score+'}',function(resp) {
+            leaders[0].score=resp
+        })
     }
 
     function LeaderLine(num) {
@@ -138,7 +143,7 @@
             this.base.move(-speed, 0)
             if (dying) {
                 if (countdown) countdown--
-                else return this.base.hide(), false
+                else return this.base.hide(), score++, false
             } 
             if (this.base.posX1()<-40) return this.base.hide(), false
                 
@@ -168,11 +173,11 @@
         this.base = new rw.Rule(0)
         var gameOver = false,
             score = 0,
-            poll = 30*60
+            poll = 10*60
         this.rule = function() {
             // Poll server
             poll ? poll-- : (
-                poll = 30*60,
+                poll = 10*60,
                 pollServer()
             )
             //end game
@@ -205,8 +210,9 @@
         .newEnt(new Backdrop(2))
             .base.display(480,0).end()
         .start()
-        .post(postUrl+'play/',"{'name':'caz'}", function(resp) {
-            alert(resp)
+        .post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
+            resp = JSON.parse(resp)
+            playerId = resp.player.name
         })
     })
 })()
