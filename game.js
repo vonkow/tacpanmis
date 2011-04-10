@@ -25,8 +25,7 @@
 // {"player":{"created_at":,"id":,"name":,"score":,"time":,"updated_at":}}
 (function() {
     // Structure
-    var canHit = ['spoonhead','spoonbody'],
-        path = 'sprites/',
+    var path = 'sprites/',
         //postUrl = 'http://localhost:3000/',
         postUrl = 'http://tacpan.heroku.com/',
         score = 0,
@@ -37,7 +36,7 @@
         rw.post(postUrl+'player/update/','{"id":'+playerId+',"score":'+score+'}',function(resp) {
             resp = JSON.parse(resp)
             for (var x=0; x<3; x++) {
-                leaders[x] = resp[x] ? resp[x].name+' : '+resp[x].score : ''
+                leaders[x] = resp[x].player ? resp[x].player.name+' : '+resp[x].player.score : ''
             }
         })
     }
@@ -71,6 +70,7 @@
     function Panda() {
         this.base = new rw.Ent('panda', 'panda1', 150, 40)
         var counter = 20,
+            lasCooldown = 0,
             ani = 1,
             health = 2
 
@@ -85,17 +85,39 @@
             if (mY<pY) move = -2
             else if ((mY>pY+40)&&(pY+40<300)) move = 2
             this.base.move(0, move, 0)
+            if (!lasCooldown) {
+                if ((lasCount<6)&&(rw.mouse.down())) {
+                    lasCooldown = 20
+                    rw.newEnt(new Laser(pY+move))
+                }
+            } else lasCooldown--
+                    
         }
-        this.hitMap=[['panda',canHit,0,0,150,40]]
+        this.hitMap=[['panda',['spoon'],0,0,150,40]]
         this.gotHit = function(by) {
-            if (by=='spoonbody') {
+            if (by=='spoon') {
                 health--
             }
             if (!health) return this.base.hide(), false//rw.rules['score'].gameOver=true
         }
     }
 
-    var spoonCount = cloudCount = 0
+    var spoonCount = laserCount = totLasers = 0
+
+    function Laser(yPos) {
+        this.base = new rw.Ent('laser_'+laserCount++, 'laser', 20, 10)
+        this.update = function() {
+            if (this.base.posX1()>480) return totLasers--, this.base.hide(), false
+            this.base.move(2,0)
+        }
+        this.hitMap = [['laser',['spoon'], 2, 0, 8, 20]]
+        this.gotHit = function() { return totLasers--, this.base.hide(), false }
+        this.init = function() {
+            totLasers++
+            this.base.display(160, yPos)
+        }
+    }
+
     function Spoon(yPos) {
         this.base = new rw.Ent('spoon_'+spoonCount++, 'spoon', 22, 100)
         var dying = false,
@@ -112,8 +134,8 @@
             
         }
         this.hitMap = [
-            ['spoonhead',['panda'],0,0,22,36],
-            ['spoonbody',['panda'],10,37,13,100]
+            ['spoon',['panda','laser'],0,0,22,36],
+            ['spoon',['panda','laser'],10,37,13,100]
         ]
         this.gotHit = function() { 
             dying=true 
@@ -182,12 +204,12 @@
         .loadSprites({
             panda1: [path+'rpm1.png', 150, 40, 0, 0],
             panda2: [path+'rpm2.png', 150, 40, 0, 0],
+            laser: [path+'laser.png', 20, 10, 0, 0],
             spoon: [path+'spoon.png', 22, 100, 0, 0],
             bg: [path+'bg.png',480,320,0,0]
         }, function() {
             rw.post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
                 resp = JSON.parse(resp),
-                //alert(resp.player.id),
                 playerId = resp.player.id,
                 makeGame()
             })
