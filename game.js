@@ -127,7 +127,7 @@
     }
 
     function Laser(yPos) {
-        this.base = new rw.Ent('laser_'+laserCount++, 'laser', 20, 10)
+        this.base = new rw.Ent('laser_'+lasCount++, 'laser', 20, 10)
         this.update = function() {
             if (this.base.posX1()>480) return totLasers--, this.base.hide(), false
             this.base.move(2,0)
