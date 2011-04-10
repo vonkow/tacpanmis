@@ -207,6 +207,6 @@
         .start()
         .post(postUrl+'play/','name=caz', function(resp) {
             alert(resp)
-        }
+        })
     })
 })()
