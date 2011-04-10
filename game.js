@@ -6,7 +6,6 @@
 // track & show score & health
 // fix up hit maps: only front of panda can kill spoons via the head
 // add grapes or something
-// ajax calls to server
 // make game increase in difficulty over time
 // add cute noises, or something for more HTML5 fun!!!
 
