@@ -75,6 +75,8 @@
 
     function pollServer() {
         rw.post(postUrl+'player/update/','{"id":'+playerId+',"score":'+score+'}',function(resp) {
+            resp = JSON.parse(resp)
+
             leaders[0].score=resp
         })
     }
