@@ -185,6 +185,23 @@
     }
 
     // Implementation
+    function makeGame() {
+        rw.stop(function() {
+            rw.wipeAll()
+            .newRule('score', new Score())
+            .newRule('spawner', new Spawner())
+            .newEnt(new LeaderLine(0)).base.end()
+            .newEnt(new LeaderLine(1)).base.end()
+            .newEnt(new LeaderLine(2)).base.end()
+            .newEnt(new Panda())
+                .base.display(10,140,320).end()
+            .newEnt(new Backdrop(1))
+                .base.display(0,0).end()
+            .newEnt(new Backdrop(2))
+                .base.display(480,0).end()
+            .start()
+        })
+    }
     rw.loadSprites({
         splash: [path+'splashpanda.png', 480, 320, 0, 0]
     }, function() {
@@ -209,21 +226,7 @@
                 resp = JSON.parse(resp),
                 //alert(resp.player.id),
                 playerId = resp.player.id,
-                rw.stop(function() {
-                    rw.wipeAll()
-                    .newRule('score', new Score())
-                    .newRule('spawner', new Spawner())
-                    .newEnt(new LeaderLine(0)).base.end()
-                    .newEnt(new LeaderLine(1)).base.end()
-                    .newEnt(new LeaderLine(2)).base.end()
-                    .newEnt(new Panda())
-                        .base.display(10,140,320).end()
-                    .newEnt(new Backdrop(1))
-                        .base.display(0,0).end()
-                    .newEnt(new Backdrop(2))
-                        .base.display(480,0).end()
-                    .start()
-                })
+                makeGame()
             })
         })
     })
