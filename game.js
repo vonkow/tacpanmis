@@ -28,23 +28,30 @@
     var path = 'sprites/',
         //postUrl = 'http://localhost:3000/',
         postUrl = 'http://tacpan.heroku.com/',
-        score = 0,
         playerId = false,
+        score = 0,
+        health = 5,
+        spoonCount = lasCount = totLasers = 0,
         leaders = ['','','']
 
     function pollServer() {
-        rw.post(postUrl+'player/update/','{"id":'+playerId+',"score":'+score+'}',function(resp) {
-            resp = JSON.parse(resp)
-            for (var x=0; x<3; x++) {
-                leaders[x] = resp[x].player ? resp[x].player.name+' : '+resp[x].player.score : ''
+        rw.post(
+            postUrl+'player/update/',
+            '{"id":'+playerId+',"score":'+score+'}',
+            function(resp) {
+                resp = JSON.parse(resp)
+                for (var x=0; x<3; x++) {
+                    leaders[x] = resp[x].player ? 
+                        resp[x].player.name+' : '+resp[x].player.score : ''
+                }
             }
-        })
+        )
     }
 
     function LeaderLine(num) {
         this.base = new rw.Ent('leader_'+num, 'text', 500, 16)
         this.text = {
-            text: leaders[num].name+' : '+leaders[num].score,
+            text: '',
             form: 'fill',
             style: {
                 font:'12pt sans',
@@ -56,6 +63,24 @@
         }
         this.init = function() {
             this.base.display(0,16+num*16)
+        }
+    }
+
+    function StatLine() {
+        this.base = new rw.Ent('stats', 'text', 500, 16)
+        this.text = {
+            text: '',
+            form: 'fill',
+            style: {
+                font:'12pt sans',
+                fill: '#000'
+            }
+        }
+        this.update = function() {
+            this.text.text = 'Score: '+score+' Health: '+health
+        }
+        this.init = function() {
+            this.base.display(0,320)
         }
     }
 
@@ -71,8 +96,7 @@
         this.base = new rw.Ent('panda', 'panda1', 150, 40)
         var counter = 20,
             lasCooldown = 0,
-            ani = 1,
-            health = 2
+            ani = 1
 
         this.update = function(pX,pY) {
             var mY = rw.mouse.y(),
@@ -101,8 +125,6 @@
             if (!health) return this.base.hide(), false//rw.rules['score'].gameOver=true
         }
     }
-
-    var spoonCount = laserCount = totLasers = 0
 
     function Laser(yPos) {
         this.base = new rw.Ent('laser_'+laserCount++, 'laser', 20, 10)
@@ -175,6 +197,7 @@
             rw.wipeAll()
             .newRule('score', new Score())
             .newRule('spawner', new Spawner())
+            .newEnt(new StatLine()).base.end()
             .newEnt(new LeaderLine(0)).base.end()
             .newEnt(new LeaderLine(1)).base.end()
             .newEnt(new LeaderLine(2)).base.end()
