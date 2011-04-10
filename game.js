@@ -63,7 +63,7 @@
     // Structure
     var canHit = ['spoonhead','spoonbody'],
         path = 'sprites/',
-        postUrl = 'http://tacpan.heroku.com/'
+        postUrl = 'http://tacpan.heroku.com/',
         score = 0,
         leaders = [
             {name:'bob', score:800},
@@ -205,7 +205,7 @@
         .newEnt(new Backdrop(2))
             .base.display(480,0).end()
         .start()
-        .post(postUrl+'play/','name=caz', function(resp) {
+        .post(postUrl+'play/',"{'name':'caz'}", function(resp) {
             alert(resp)
         })
     })
