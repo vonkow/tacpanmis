@@ -212,7 +212,7 @@
         .start()
         .post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
             resp = JSON.parse(resp)
-            playerId = resp.player.name
+            playerId = resp.player.id
         })
     })
 })()
