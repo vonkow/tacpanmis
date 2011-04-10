@@ -110,7 +110,7 @@
             else if ((mY>pY+40)&&(pY+40<300)) move = 2
             this.base.move(0, move, 0)
             if (!lasCooldown) {
-                if ((lasCount<6)&&(rw.mouse.down())) {
+                if ((totLasers<6)&&(rw.mouse.down())) {
                     lasCooldown = 20
                     rw.newEnt(new Laser(pY+move))
                 }
