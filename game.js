@@ -1,12 +1,8 @@
 // TODO!!!
 // make explody graphics
-// make background graphics
-// make splashscreen & gameover
+// game over graphic?
 // add form for name before game starts
 // track & show score & health
-// fix up hit maps: only front of panda can kill spoons via the head
-// add grapes or something
-// make game increase in difficulty over time
 // add cute noises, or something for more HTML5 fun!!!
 
 /*
@@ -26,38 +22,6 @@
  *     
  */
 
-// Lovely bit of code that makes touch pretend it's a mouse
-// Source: http://ross.posterous.com/2008/08/19/iphone-touch-events-in-javascript/ 
-(function() {
-    function touchHandler(event) {
-        var touches = event.changedTouches,
-            first = touches[0],
-            type = ""
-        switch(event.type) {
-            case "touchstart": type = "mousedown"; break
-            case "touchmove":  type="mousemove"; break
-            case "touchend":   type="mouseup"; break
-            default: return
-        }
-        
-        var simulatedEvent = document.createEvent("MouseEvent")
-        simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-                                  first.screenX, first.screenY, 
-                                  first.clientX, first.clientY, false, 
-                                  false, false, false, 0/*left*/, null)
-
-        first.target.dispatchEvent(simulatedEvent)
-        event.preventDefault()
-    }
-
-    function init() {
-        document.addEventListener("touchstart", touchHandler, true)
-        document.addEventListener("touchmove", touchHandler, true)
-        document.addEventListener("touchend", touchHandler, true)
-        document.addEventListener("touchcancel", touchHandler, true)
-    }
-})();
-
 // {"player":{"created_at":,"id":,"name":,"score":,"time":,"updated_at":}}
 (function() {
     // Structure
@@ -67,17 +31,14 @@
         postUrl = 'http://tacpan.heroku.com/',
         score = 0,
         playerId = false,
-        leaders = [
-            {name:'bob', score:800},
-            {name:'bib', score:80},
-            {name:'you', score:8}
-        ]
+        leaders = ['','','']
 
     function pollServer() {
         rw.post(postUrl+'player/update/','{"id":'+playerId+',"score":'+score+'}',function(resp) {
             resp = JSON.parse(resp)
-
-            leaders[0].score=resp
+            for (var x=0; x<3; x++) {
+                leaders[x] = resp[x] ? resp[x].name+' : '+resp[x].score : ''
+            }
         })
     }
 
@@ -92,7 +53,7 @@
             }
         }
         this.update = function() {
-            this.text.text = leaders[num].name+' : '+leaders[num].score
+            this.text.text = leaders[num]
         }
         this.init = function() {
             this.base.display(0,16+num*16)
