@@ -187,10 +187,7 @@
 
     // Implementation
     rw.loadSprites({
-        panda1: [path+'rpm1.png', 150, 40, 0, 0],
-        panda2: [path+'rpm2.png', 150, 40, 0, 0],
-        spoon: [path+'spoon.png', 22, 100, 0, 0],
-        bg: [path+'bg.png',480,320,0,0]
+        splash: [path+'splashpanda.png', 480, 320, 0, 0]
     }, function() {
         rw.init('playarea', {
             x:480,
@@ -198,22 +195,37 @@
             FPS:60,
             sequence:['ajax','ents','cols','rule','kill','blit','rule']
         })
-        .newRule('score', new Score())
-        .newRule('spawner', new Spawner())
-        .newEnt(new LeaderLine(0)).base.end()
-        .newEnt(new LeaderLine(1)).base.end()
-        .newEnt(new LeaderLine(2)).base.end()
-        .newEnt(new Panda())
-            .base.display(10,140,320).end()
-        .newEnt(new Backdrop(1))
-            .base.display(0,0).end()
-        .newEnt(new Backdrop(2))
-            .base.display(480,0).end()
-        .post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
-            resp = JSON.parse(resp),
-            alert(resp.player.id),
-            playerId = resp.player.id,
-            rw.start()
+        .newEnt({
+            base:new rw.Ent('splash','splash',480,320),
+            update:function() {}
+        }).base.display(0,0).end()
+        .start()
+        .loadSprites({
+            panda1: [path+'rpm1.png', 150, 40, 0, 0],
+            panda2: [path+'rpm2.png', 150, 40, 0, 0],
+            spoon: [path+'spoon.png', 22, 100, 0, 0],
+            bg: [path+'bg.png',480,320,0,0]
+        }, function() {
+            rw.post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
+                resp = JSON.parse(resp),
+                //alert(resp.player.id),
+                playerId = resp.player.id,
+                rw.stop(function() {
+                    rw.wipeAll()
+                    .newRule('score', new Score())
+                    .newRule('spawner', new Spawner())
+                    .newEnt(new LeaderLine(0)).base.end()
+                    .newEnt(new LeaderLine(1)).base.end()
+                    .newEnt(new LeaderLine(2)).base.end()
+                    .newEnt(new Panda())
+                        .base.display(10,140,320).end()
+                    .newEnt(new Backdrop(1))
+                        .base.display(0,0).end()
+                    .newEnt(new Backdrop(2))
+                        .base.display(480,0).end()
+                    .start()
+                })
+            })
         })
     })
 })()
