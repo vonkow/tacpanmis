@@ -75,7 +75,7 @@
         ]
 
     function pollServer() {
-        rw.post(postUrl+'player/update/','{"id":,"score":'+score+'}',function(resp) {
+        rw.post(postUrl+'player/update/','{"id":'+playerId+',"score":'+score+'}',function(resp) {
             leaders[0].score=resp
         })
     }
@@ -209,10 +209,10 @@
             .base.display(0,0).end()
         .newEnt(new Backdrop(2))
             .base.display(480,0).end()
-        .start()
         .post(postUrl+'player/play/',"{'name':'caz'}", function(resp) {
             resp = JSON.parse(resp)
             playerId = resp.player.id
+            rw.start()
         })
     })
 })()
