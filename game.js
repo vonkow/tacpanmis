@@ -1,12 +1,7 @@
-// TODO!!!
-// make explody graphics
-// game over graphic?
-// add form for name before game starts
-// track & show score & health
-// add cute noises, or something for more HTML5 fun!!!
-
 /*
  * Tactical Panda Missle
+ * Built in 24 hours for the programming contest at Barcamp Boston 6
+ * By: Dan Vingo and Caz vonKow
  *
  * License: Follow the flowchart @ http://cl.ly/5nAo and choose the one you like
  *
@@ -115,8 +110,8 @@ function goForth() {
                 else if ((mY>pY+40)&&(pY+40<300)) move = 2
                 this.base.move(0, move, 0)
                 if (!lasCooldown) {
-                    if ((totLasers<6)&&(rw.mouse.down())) {
-                        lasCooldown = 20
+                    if ((totLasers<3)&&rw.mouse.down()) {
+                        lasCooldown = 30
                         rw.newEnt(new Laser(pY+move+15))
                     }
                 } else lasCooldown--
@@ -186,9 +181,9 @@ function goForth() {
         function Spawner() {
             this.base = new rw.Rule(1)
             this.rule = function() {
-                if (Math.random()<0.015) {
+                if (Math.random()<0.05) {
                     var posY = Math.floor(220*Math.random())
-                    if (Math.random()<0.1) rw.newEnt(new Grapes(posY))
+                    if (Math.random()<0.05) rw.newEnt(new Grapes(posY))
                     else rw.newEnt(new Spoon(posY))
                 }
             }
@@ -238,6 +233,7 @@ function goForth() {
                     update:function() {},
                     init:function() {this.base.display(0,0)}
                 })
+				rw.start()
             })
         }
 
