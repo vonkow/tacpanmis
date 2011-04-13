@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Tactical Panda Missile!</title>
-        <script src="http://vonkow.com/media/rosewood/rosewood.js"></script>
+        <script src="../Rosewood/rosewood.js"></script>
     </head>
     <body>
         <div id="playarea"></div>
@@ -95,12 +95,18 @@
 
     function Laser(yPos) {
         this.base = new rw.Ent('laser_'+lasCount++, 'laser', 20, 10)
+		var isDead = false
         this.update = function() {
             if (this.base.posX1()>480) return totLasers--, this.base.hide(), false
             this.base.move(2,0)
         }
         this.hitMap = [['laser',['spoon'], 2, 0, 8, 20]]
-        this.gotHit = function() { return totLasers--, this.base.hide(), false }
+		this.gotHit = function() { 
+			if (!isDead) {
+				totLasers--, isDead = true
+				return this.base.hide(), false 
+			}
+		}
         this.init = function() {
             totLasers++
             this.base.display(160, yPos)
@@ -126,13 +132,13 @@
 
     function Grapes(yPos) {
         this.base = new rw.Ent('grapes_'+grapeCount++, 'grapes', 37, 50)
-        var speed = 2+Math.random()
+		var speed = 2+Math.random()
         this.update = function(pX, pY) {
             this.base.move(-speed, 0)
             if (pX<-40) return this.base.hide(), false
         }
         this.hitMap = [['grapes',['panda'],0,0,37,50]]
-        this.gotHit = function() { return this.base.hide(), false }
+		this.gotHit = function() { return this.base.hide(), false }
         this.init = function() { this.base.display(480,yPos) }
     }
 
